@@ -23,21 +23,5 @@
  *
  */
 
-#include "uart.h"
-#include "mbox.h"
-#include "power.h"
-#include "rand.h"
-#include "lfb.h"
-
-void main()
-{
-    // set up serial console
-    uart_init();
-    lfb_init();
-
-    lfb_showpicture();
-    // echo everything back
-    while(1) {
-        uart_send(uart_getc());
-    }
-}
+void lfb_init();
+void lfb_showpicture();
