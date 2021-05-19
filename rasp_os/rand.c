@@ -23,22 +23,32 @@
  *
  */
 
-SECTIONS
-{
-    . = 0x80000;
-    .text : { KEEP(*(.text.boot)) *(.text .text.* .gnu.linkonce.t*) }
-    .rodata : { *(.rodata .rodata.* .gnu.linkonce.r*) }
-    PROVIDE(_data = .);
-    .data : { *(.data .data.* .gnu.linkonce.d*) }
-    .bss (NOLOAD) : {
-        . = ALIGN(16);
-        __bss_start = .;
-        *(.bss .bss.*)
-        *(COMMON)
-        __bss_end = .;
-    }
-    _end = .;
+#include "gpio.h"
 
-   /DISCARD/ : { *(.comment) *(.gnu*) *(.note*) *(.eh_frame*) }
+#define RNG_CTRL        ((volatile unsigned int*)(MMIO_BASE+0x00104000))
+#define RNG_STATUS      ((volatile unsigned int*)(MMIO_BASE+0x00104004))
+#define RNG_DATA        ((volatile unsigned int*)(MMIO_BASE+0x00104008))
+#define RNG_INT_MASK    ((volatile unsigned int*)(MMIO_BASE+0x00104010))
+
+/**
+ * Initialize the RNG
+ */
+void rand_init()
+{
+    *RNG_STATUS=0x40000;
+    // mask interrupt
+    *RNG_INT_MASK|=1;
+    // enable
+    *RNG_CTRL|=1;
 }
-__bss_size = (__bss_end - __bss_start)>>3;
+
+/**
+ * Return a random number between [min..max]
+ */
+unsigned int rand(unsigned int min, unsigned int max)
+{
+    // may need to wait for entropy: bits 24-31 store how many words are
+    // available for reading; require at least one
+    while(!((*RNG_STATUS)>>24)) asm volatile("nop");
+    return *RNG_DATA % (max-min) + min;
+}
