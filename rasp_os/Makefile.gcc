@@ -36,8 +36,14 @@ start.o: start.S
 %.o: %.c
 	$(GCCPATH)/aarch64-none-elf-gcc $(CFLAGS) -c $< -o $@
 
-kernel8.img: start.o $(OBJS)
-	$(GCCPATH)/aarch64-none-elf-ld -nostdlib -nostartfiles start.o $(OBJS) -T link.ld -o kernel8.elf
+font_psf.o: font.psf
+	$(GCCPATH)/aarch64-none-elf-ld -r -b binary -o font_psf.o font.psf
+
+font_sfn.o: font.sfn
+	$(GCCPATH)/aarch64-none-elf-ld -r -b binary -o font_sfn.o font.sfn
+
+kernel8.img: start.o font_psf.o font_sfn.o $(OBJS)
+	$(GCCPATH)/aarch64-none-elf-ld -nostdlib -nostartfiles start.o font_psf.o font_sfn.o $(OBJS) -T link.ld -o kernel8.elf
 	$(GCCPATH)/aarch64-none-elf-objcopy -O binary kernel8.elf kernel8.img
 
 clean:
