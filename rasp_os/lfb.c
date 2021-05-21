@@ -25,6 +25,7 @@
 
 #include "uart.h"
 #include "mbox.h"
+#include "util.h"
 
 /* PC Screen Font as used by Linux Console */
 typedef struct {
@@ -118,6 +119,17 @@ void lfb_init()
         lfb=(void*)((unsigned long)mbox[28]);
     } else {
         uart_puts("Unable to set screen resolution to 1024x768x32\n");
+    }
+}
+
+void clean_screen()
+{
+    int y;
+    unsigned char *ptr=lfb;
+
+    for(y = 0; y < height; y++) {
+        memset(ptr, 0, width * 4);
+        ptr += pitch;
     }
 }
 

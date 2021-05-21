@@ -23,33 +23,5 @@
  *
  */
 
-#include "uart.h"
-#include "mbox.h"
-#include "power.h"
-#include "rand.h"
-#include "lfb.h"
-
-void main()
-{
-    // set up serial console
-    uart_init();
-    lfb_init();
-
-    int x = 600, y = 600;
-
-    while (1) {
-        print_at(x, y, "%s", "Hello world");
-        char ch = uart_getc();
-        if (ch == 'a') x -= 8;
-        else if (ch == 'd') x += 8;
-        else if (ch == 'w') y -= 16;
-        else if (ch == 's') y += 16;
-        clean_screen();
-    }
-
-
-    // echo everything back
-    while(1) {
-        uart_send(uart_getc());
-    }
-}
+unsigned int sprintf(char *dst, char* fmt, ...);
+unsigned int vsprintf(char *dst,char* fmt, __builtin_va_list args);

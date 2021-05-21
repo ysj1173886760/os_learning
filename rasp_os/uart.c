@@ -25,6 +25,9 @@
 
 #include "gpio.h"
 #include "mbox.h"
+#include "delays.h"
+#include "lfb.h"
+#include "sprintf.h"
 
 /* PL011 UART registers */
 #define UART0_DR        ((volatile unsigned int*)(MMIO_BASE+0x00201000))
@@ -35,6 +38,9 @@
 #define UART0_CR        ((volatile unsigned int*)(MMIO_BASE+0x00201030))
 #define UART0_IMSC      ((volatile unsigned int*)(MMIO_BASE+0x00201038))
 #define UART0_ICR       ((volatile unsigned int*)(MMIO_BASE+0x00201044))
+
+// get address from linker
+extern volatile unsigned char _end;
 
 /**
  * Set baud rate and characteristics (115200 8N1) and map to GPIO
@@ -64,9 +70,9 @@ void uart_init()
     r|=(4<<12)|(4<<15);    // alt0
     *GPFSEL1 = r;
     *GPPUD = 0;            // enable pins 14 and 15
-    r=150; while(r--) { asm volatile("nop"); }
+    wait_cycles(150);
     *GPPUDCLK0 = (1<<14)|(1<<15);
-    r=150; while(r--) { asm volatile("nop"); }
+    wait_cycles(150);
     *GPPUDCLK0 = 0;        // flush GPIO setup
 
     *UART0_ICR = 0x7FF;    // clear interrupts
@@ -124,4 +130,16 @@ void uart_hex(unsigned int d) {
         n+=n>9?0x37:0x30;
         uart_send(n);
     }
+}
+
+void print_at(int x, int y, char *fmt, ...) {
+    __builtin_va_list args;
+    __builtin_va_start(args, fmt);
+    // we don't have memory allocation yet, so we
+    // simply place our string after our code
+    char *s = (char*)&_end;
+    // use sprintf to format our string
+    vsprintf(s,fmt,args);
+    // print out as usual
+    lfb_print(x, y, s);
 }

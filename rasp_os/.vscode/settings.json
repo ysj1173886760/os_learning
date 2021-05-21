@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "lfb.h": "c",
+        "*.tcc": "c",
+        "cstdio": "c"
+    }
+}
