@@ -141,5 +141,5 @@ void print_at(int x, int y, char *fmt, ...) {
     // use sprintf to format our string
     vsprintf(s,fmt,args);
     // print out as usual
-    lfb_print(x, y, s);
+    lfb_proprint(x, y, s);
 }

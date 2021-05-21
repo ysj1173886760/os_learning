@@ -2,6 +2,8 @@
     "files.associations": {
         "lfb.h": "c",
         "*.tcc": "c",
-        "cstdio": "c"
+        "cstdio": "c",
+        "mbox.h": "c",
+        "gpio.h": "c"
     }
 }

@@ -28,24 +28,16 @@
 #include "power.h"
 #include "rand.h"
 #include "lfb.h"
+#include "tetris.h"
 
 void main()
 {
     // set up serial console
     uart_init();
     lfb_init();
+    rand_init();
 
-    int x = 600, y = 600;
-
-    while (1) {
-        print_at(x, y, "%s", "Hello world");
-        char ch = uart_getc();
-        if (ch == 'a') x -= 8;
-        else if (ch == 'd') x += 8;
-        else if (ch == 'w') y -= 16;
-        else if (ch == 's') y += 16;
-        clean_screen();
-    }
+    tetris_run(12, 15);   
 
 
     // echo everything back

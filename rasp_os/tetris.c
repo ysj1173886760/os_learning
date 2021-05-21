@@ -1,70 +1,64 @@
-/*
+#include "uart.h"
+#include "rand.h"
+#include "delays.h"
+#include "gpio.h"
+#include "lfb.h"
+
+#define UART0_DR        ((volatile unsigned int*)(MMIO_BASE+0x00201000))
+#define UART0_FR        ((volatile unsigned int*)(MMIO_BASE+0x00201018))
+
+#define CHAR_WIDTH 8
+#define CHAR_HEIGHT 16
+#define BASEX 0
+#define BASEY 0
+
 struct tetris_level {
     int score;
     int nsec;
 };
 
+struct tetris_block {
+    char data[5][5];
+    int w;
+    int h;
+};
+
 struct tetris {
-    char **game;
+    char game[30][30];
     int w;
     int h;
     int level;
     int gameover;
     int score;
-    struct tetris_block {
-        char data[5][5];
-        int w;
-        int h;
-    } current;
     int x;
     int y;
+    struct tetris_block current;
 };
 
 struct tetris_block blocks[] =
 {
     {{"##", 
-         "##"},
+      "##"},
     2, 2
     },
     {{" X ",
-         "XXX"},
+      "XXX"},
     3, 2
     },
     {{"@@@@"},
         4, 1},
     {{"OO",
-         "O ",
-         "O "},
+      "O ",
+      "O "},
     2, 3},
     {{"&&",
-         " &",
-         " &"},
+      " &",
+      " &"},
     2, 3},
     {{"ZZ ",
-         " ZZ"},
+      " ZZ"},
     3, 2}
 };
-
-struct tetris_level levels[]=
-{
-    {0,
-        1200000},
-    {1500,
-        900000},
-    {8000,
-        700000},
-    {20000,
-        500000},
-    {40000,
-        400000},
-    {75000,
-        300000},
-    {100000,
-        200000}
-};
-
-#define TETRIS_PIECES (sizeof(blocks)/sizeof(struct tetris_block))
-#define TETRIS_LEVELS (sizeof(levels)/sizeof(struct tetris_level))
 
 void
 tetris_init(struct tetris *t,int w,int h) {
@@ -74,47 +68,47 @@ tetris_init(struct tetris *t,int w,int h) {
     t->gameover = 0;
     t->w = w;
     t->h = h;
-    t->game = malloc(sizeof(char *)*w);
-    for (x=0; x<w; x++) {
-        t->game[x] = malloc(sizeof(char)*h);
-        for (y=0; y<h; y++)
+    for (x=0; x < w; x++) {
+        for (y=0; y < h; y++)
             t->game[x][y] = ' ';
     }
 }
 
 void
-tetris_clean(struct tetris *t) {
-    int x;
-    for (x=0; x<t->w; x++) {
-        free(t->game[x]);
-    }
-    free(t->game);
-}
-
-void
 tetris_print(struct tetris *t) {
+    clean_screen();
     int x,y;
-    for (x=0; x<30; x++)
-        printf("\n");
-    printf("[LEVEL: %d | SCORE: %d]\n", t->level, t->score);
-    for (x=0; x<2*t->w+2; x++)
-        printf("~");
-    printf("\n");
+    int posx = BASEX, posy = BASEY;
+    print_at(posx, posy, "[LEVEL: %d | SCORE: %d]", t->level, t->score);
+    posy += CHAR_HEIGHT;
+    for (x=0; x<2*t->w+2; x++) {
+        print_at(posx, posy, "~");
+        posx += CHAR_WIDTH;
+    }
+    posx = BASEX;
+    posy += CHAR_HEIGHT;
     for (y=0; y<t->h; y++) {
-        printf ("!");
+        print_at(posx, posy, "!");
+        posx += CHAR_WIDTH;
         for (x=0; x<t->w; x++) {
             if (x>=t->x && y>=t->y 
                     && x<(t->x+t->current.w) && y<(t->y+t->current.h) 
-                    && t->current.data[y-t->y][x-t->x]!=' ')
-                printf("%c ", t->current.data[y-t->y][x-t->x]);
-            else
-                printf("%c ", t->game[x][y]);
+                    && t->current.data[y-t->y][x-t->x]!=' ') {
+                print_at(posx, posy, "%c ", t->current.data[y-t->y][x-t->x]);
+                posx += CHAR_WIDTH * 2;
+            } else {
+                print_at(posx, posy, "%c ", t->game[x][y]);
+                posx += CHAR_WIDTH * 2;
+            }
         }
-        printf ("!\n");
+        print_at(posx, posy, "!");
+        posx = BASEX;
+        posy += CHAR_HEIGHT;
     }
-    for (x=0; x<2*t->w+2; x++)
-        printf("~");
-    printf("\n");
+    for (x=0; x<2*t->w+2; x++) {
+        print_at(posx, posy, "~");
+        posx += CHAR_WIDTH;
+    }
 }
 
 int
@@ -139,7 +133,7 @@ tetris_hittest(struct tetris *t) {
 
 void
 tetris_new_block(struct tetris *t) {
-    t->current=blocks[random()%TETRIS_PIECES];
+    t->current=blocks[rand(0, 5)];
     t->x=(t->w/2) - (t->current.w/2);
     t->y=0;
     if (tetris_hittest(t)) {
@@ -149,7 +143,7 @@ tetris_new_block(struct tetris *t) {
 
 void
 tetris_print_block(struct tetris *t) {
-    int x,y,X,Y;
+    int x,y;
     struct tetris_block b=t->current;
     for (x=0; x<b.w; x++)
         for (y=0; y<b.h; y++) {
@@ -183,7 +177,6 @@ tetris_rotate(struct tetris *t) {
 
 void
 tetris_gravity(struct tetris *t) {
-    int x,y;
     t->y++;
     if (tetris_hittest(t)) {
         t->y--;
@@ -223,33 +216,24 @@ tetris_check_lines(struct tetris *t) {
     }
 }
 
-int
-tetris_level(struct tetris *t) {
-    int i;
-    for (i=0; i<TETRIS_LEVELS; i++) {
-        if (t->score>=levels[i].score) {
-            t->level = i+1;
-        } else break;
+char getInput() {
+    char r = 0;
+    if (!(*UART0_FR&0x10)) {
+        r=(char)(*UART0_DR);
     }
-    return levels[t->level-1].nsec;
+    return r;
 }
 
 void
 tetris_run(int w, int h) {
-    struct timespec tm;
     struct tetris t;
     char cmd;
     int count=0;
-    tetris_set_ioconfig();
     tetris_init(&t, w, h);
-    srand(time(NULL));
-
-    tm.tv_sec=0;
-    tm.tv_nsec=1000000;
 
     tetris_new_block(&t);
     while (!t.gameover) {
-        nanosleep(&tm, NULL);
+        wait_msec(1000);
         count++;
         if (count%50 == 0) {
             tetris_print(&t);
@@ -258,7 +242,7 @@ tetris_run(int w, int h) {
             tetris_gravity(&t);
             tetris_check_lines(&t);
         }
-        while ((cmd=getchar())>0) {
+        while ((cmd=getInput())>0) {
             switch (cmd) {
                 case 'a':
                     t.x--;
@@ -278,13 +262,7 @@ tetris_run(int w, int h) {
                     break;
             }
         }
-        tm.tv_nsec=tetris_level(&t);
     }
 
     tetris_print(&t);
-    printf("*** GAME OVER ***\n");
-
-    tetris_clean(&t);
-    tetris_cleanup_io();
 }
-*/
