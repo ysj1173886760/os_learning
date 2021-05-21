@@ -37,11 +37,12 @@ void main()
     lfb_init();
     rand_init();
 
-    tetris_run(12, 15);   
-
-
-    // echo everything back
     while(1) {
-        uart_send(uart_getc());
+        tetris_run(12, 15);   
+        print_at(110, 30, "Game Over! Press R to Restart");
+        char ch = uart_getc();
+        while (ch != 'r') {
+            ch = uart_getc();
+        }
     }
 }

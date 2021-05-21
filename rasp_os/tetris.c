@@ -3,14 +3,15 @@
 #include "delays.h"
 #include "gpio.h"
 #include "lfb.h"
+#include "tetris.h"
 
 #define UART0_DR        ((volatile unsigned int*)(MMIO_BASE+0x00201000))
 #define UART0_FR        ((volatile unsigned int*)(MMIO_BASE+0x00201018))
 
 #define CHAR_WIDTH 8
 #define CHAR_HEIGHT 16
-#define BASEX 0
-#define BASEY 0
+#define BASEX 140
+#define BASEY 550
 
 struct tetris_level {
     int score;
@@ -109,6 +110,7 @@ tetris_print(struct tetris *t) {
         print_at(posx, posy, "~");
         posx += CHAR_WIDTH;
     }
+    copy_screen();
 }
 
 int
@@ -133,12 +135,16 @@ tetris_hittest(struct tetris *t) {
 
 void
 tetris_new_block(struct tetris *t) {
-    t->current=blocks[rand(0, 5)];
+    t->current=blocks[rand(0, 100) % 6];
     t->x=(t->w/2) - (t->current.w/2);
     t->y=0;
     if (tetris_hittest(t)) {
         t->gameover=1;
     }
+    // rotate initially
+    int rotate = rand(0, 100) % 4;
+    while (rotate--)
+        tetris_rotate(t);
 }
 
 void

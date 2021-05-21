@@ -27,5 +27,4 @@ void lfb_init();
 void lfb_print(int x, int y, char *s);
 void lfb_proprint(int x, int y, char *s);
 void clean_screen();
-void copyToScreen(char **);
-void buffer_print(int x, int y, char *s);
+void copy_screen();
