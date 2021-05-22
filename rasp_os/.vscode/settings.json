@@ -4,6 +4,8 @@
         "*.tcc": "c",
         "cstdio": "c",
         "mbox.h": "c",
-        "gpio.h": "c"
+        "gpio.h": "c",
+        "cstdlib": "cpp",
+        "algorithm": "cpp"
     }
 }

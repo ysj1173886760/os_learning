@@ -131,14 +131,14 @@ tetris_hittest(struct tetris *t) {
 
 void
 tetris_new_block(struct tetris *t) {
-    t->current=blocks[rand(0, 100) % 6];
+    t->current=blocks[rand() % 6];
     t->x=(t->w/2) - (t->current.w/2);
     t->y=0;
     if (tetris_hittest(t)) {
         t->gameover=1;
     }
     // rotate initially
-    int rotate = rand(0, 100) % 4;
+    int rotate = rand() % 4;
     while (rotate--)
         tetris_rotate(t);
 }

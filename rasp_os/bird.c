@@ -59,7 +59,7 @@ const int OPENING_WIDTH = 7;
 const int FLAPPY_COL = 10;
 
 /** Aiming for this many frames per second. */
-const float TARGET_FPS = 24;
+const float TARGET_FPS = 30;
 
 /** Amount of time the splash screen stays up. */
 const float START_TIME_SEC = 3;
@@ -141,7 +141,7 @@ void pipe_refresh(vpipe *p) {
 		p->center = NUM_COLS + PIPE_RADIUS;
 
 		// Get an opening height fraction.
-		p->opening_height = rand(0, 32767) / ((float) INT_MAX) * 0.5 + 0.25;
+		p->opening_height = rand() / ((float) INT_MAX) * 0.5 + 0.25;
 		score++;
 		if(sdigs == 1 && score > 9)
 			sdigs++;
@@ -271,7 +271,7 @@ int crashed_into_pipe(flappy f, vpipe p) {
  *
  * @param f Flappy the bird!
  *
- * @return 0 if Flappy was drawn as expected, 1 if the game should restart.
+ * @return 0 if Flappy was drawn as expected, 1 if the game should quit.
  */
 int draw_flappy(flappy f) {
 	char c[2];
@@ -279,11 +279,11 @@ int draw_flappy(flappy f) {
 
 	// If Flappy crashed into the ceiling or the floor...
 	if (h <= 0 || h >= NUM_ROWS - 1)
-		return 0;
+		return 1;
 
 	// If Flappy crashed into a pipe...
 	if (crashed_into_pipe(f, p1) || crashed_into_pipe(f, p2)) {
-		return 0;
+		return 1;
 	}
 
 	// If going down, don't flap
@@ -380,9 +380,9 @@ int flappy_bird()
 
 			// Start the pipes just out of view on the right.
 			p1.center = (int)(1.2 * (NUM_COLS - 1));
-			p1.opening_height = rand(0, 32768) / ((float) INT_MAX) * 0.5 + 0.25;
+			p1.opening_height = rand() / ((float) INT_MAX) * 0.5 + 0.25;
 			p2.center = (int)(1.75 * (NUM_COLS - 1));
-			p2.opening_height = rand(0, 32768) / ((float) INT_MAX) * 0.5 + 0.25;
+			p2.opening_height = rand() / ((float) INT_MAX) * 0.5 + 0.25;
 
 			// Initialize flappy
 			f.h0 = NUM_ROWS / 2;
@@ -404,7 +404,6 @@ int flappy_bird()
 		}
 
 		clean_screen();
-		uart_puts("we are here");
 
 		// Print "moving" floor and ceiling
 		draw_floor_and_ceiling(0, NUM_ROWS - 1, '/', 2, frame % 2);
@@ -416,9 +415,8 @@ int flappy_bird()
 		pipe_refresh(&p2);
 
 		// Draw Flappy. If Flappy crashed and user wants a restart...
-		if(!draw_flappy(f)) {
+		if(draw_flappy(f)) {
 			leave_loop = 1;
-			uart_puts("leave loop");
 		}
 
 		mvprintw(0, SCORE_START_COL - bdigs - sdigs,
