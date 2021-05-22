@@ -31,6 +31,7 @@
 #include "tetris.h"
 #include "bird.h"
 #include "io.h"
+#include "malloc.h"
 
 void print_games() {
     mvprintw(2, 20, "Press T to launch tetris");
@@ -56,6 +57,8 @@ void main()
     uart_init();
     lfb_init();
     rand_init();
+    mem_init();
+    mm_init();
 
     while(1) {
         main_screen();
