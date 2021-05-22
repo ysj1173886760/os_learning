@@ -20,7 +20,7 @@ void print_at(int x, int y, char *fmt, ...) {
     lfb_proprint(x, y, s);
 }
 
-char getInput() {
+char get_input() {
     char r = 0;
     if (!(*UART0_FR&0x10)) {
         r=(char)(*UART0_DR);

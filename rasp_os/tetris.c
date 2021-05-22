@@ -233,7 +233,7 @@ tetris_run(int w, int h) {
             tetris_gravity(&t);
             tetris_check_lines(&t);
         }
-        while ((cmd=getInput())>0) {
+        while ((cmd=get_input())>0) {
             switch (cmd) {
                 case 'a':
                     t.x--;

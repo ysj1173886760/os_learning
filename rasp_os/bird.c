@@ -395,7 +395,7 @@ int flappy_bird()
 		wait_msec((unsigned int) (1000000 / TARGET_FPS));
 
 		// Process keystrokes.
-		ch = getInput();
+		ch = get_input();
 		switch (ch) {
 		case ' ': // Give Flappy a boost!
 			f.h0 = get_flappy_position(f);

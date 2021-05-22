@@ -1,6 +1,6 @@
 void print_at(int x, int y, char *fmt, ...);
 void mvprintw(int y, int x, char *fmt, ...);
-char getInput();
+char get_input();
 
 void clear();
 void refresh();

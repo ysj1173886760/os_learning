@@ -23,7 +23,6 @@
  *
  */
 
-#include "gpio.h"
 #include "mbox.h"
 #include "delays.h"
 #include "lfb.h"
