@@ -151,3 +151,18 @@ char getInput() {
     }
     return r;
 }
+
+void mvprintw(int y, int x, char *fmt, ...) {
+    x *= CHAR_WIDTH;
+    y *= CHAR_HEIGHT;
+    y += BASEY;
+    __builtin_va_list args;
+    __builtin_va_start(args, fmt);
+    // we don't have memory allocation yet, so we
+    // simply place our string after our code
+    char *s = (char*)&_end;
+    // use sprintf to format our string
+    vsprintf(s,fmt,args);
+    // print out as usual
+    lfb_proprint(x, y, s);
+}

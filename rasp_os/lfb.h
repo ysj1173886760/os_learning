@@ -33,4 +33,3 @@ void lfb_print(int x, int y, char *s);
 void lfb_proprint(int x, int y, char *s);
 void clean_screen();
 void copy_screen();
-void mvprintw();

@@ -348,7 +348,7 @@ void splash_screen() {
 	mvprintw(r + 3, c, "|_| |_\\__,_| .__/ .__/\\_, | |___/_|_| \\__,_|");
 	mvprintw(r + 4, c, "           |_|  |_|   |__/                  ");
 	mvprintw(NUM_ROWS / 2 + 1, NUM_COLS / 2 - 10,
-			"Press <w> to flap!");
+			"Press <space> to flap!");
 
 	// Print the progress bar.
 	mvprintw(PROG_BAR_ROW, NUM_COLS / 2 - PROG_BAR_LEN / 2 - 1, "[");
@@ -393,10 +393,9 @@ int flappy_bird()
 		wait_msec((unsigned int) (1000000 / TARGET_FPS));
 
 		// Process keystrokes.
-		ch = -1;
 		ch = getInput();
 		switch (ch) {
-		case 'w': // Give Flappy a boost!
+		case ' ': // Give Flappy a boost!
 			f.h0 = get_flappy_position(f);
 			f.t = 0;
 			break;
@@ -405,6 +404,7 @@ int flappy_bird()
 		}
 
 		clean_screen();
+		uart_puts("we are here");
 
 		// Print "moving" floor and ceiling
 		draw_floor_and_ceiling(0, NUM_ROWS - 1, '/', 2, frame % 2);
@@ -417,7 +417,8 @@ int flappy_bird()
 
 		// Draw Flappy. If Flappy crashed and user wants a restart...
 		if(!draw_flappy(f)) {
-			break;
+			leave_loop = 1;
+			uart_puts("leave loop");
 		}
 
 		mvprintw(0, SCORE_START_COL - bdigs - sdigs,

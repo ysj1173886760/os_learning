@@ -60,6 +60,8 @@ typedef struct {
 } __attribute__((packed)) sfn_t;
 extern volatile unsigned char _binary_font_sfn_start;
 
+extern volatile unsigned char _end;
+
 unsigned int width, height, pitch;
 unsigned char *lfb;
 
@@ -245,11 +247,4 @@ void lfb_proprint(int x, int y, char *s)
         // add advances
         x += chr[4]+1; y += chr[5];
     }
-}
-
-void mvprintw(int y, int x, char *s) {
-    x *= CHAR_WIDTH;
-    y *= CHAR_HEIGHT;
-    y += BASEY;
-    lfb_proprint(x, y, s);
 }
