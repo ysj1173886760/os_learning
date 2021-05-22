@@ -1,22 +1,33 @@
-Tutorial 05 - UART0, PL011
-==========================
+### ASCII-OS
 
-This tutorial does the same as tutorial 04, but it prints the serial number on UART0. As such, it can be used
-easily with qemu, like
+A toy operating system which can only play games
 
-```sh
-$ qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial stdio
-My serial number is: 0000000000000000
-```
+support the basic interface of drawing texts
 
-Uart.h, uart.c
---------------
+ascii-os is aimed to run on raspi3, other platform is not supported, maybe raspi4 can worked well
 
-Before we could use a rate divisor value, we must establish a valid clock rate for the PL011. It's done
-via mailboxes, with the same property channel we used earlier. Otherwise this interface is identical to the
-UART1 one.
+it doesn't own the must-have component of a normal os e.g. file system, virtual memory
 
-Main
-----
+###### build
 
-We query the board's serial number and then we display it on the serial console.
+after clone the repo to local
+
+you have to configure it first, open Makefile, find GCCPATH, change it to your local path of cross compiler
+
+then type `make`
+
+then you need to have qemu which can support simulate raspi3
+
+my version is 3.0.0
+
+then type `qemu-system-aarch64 -kernel kernel8.img -M raspi3 -serial stdio`
+
+then you can run play your game
+
+##### note
+
+note that we have redirected the UART to our stdio when we launch the qemu, so you have to use your terminal/console to control the game
+
+currently only support Tetris and Bird
+
+Welcome to contribute
