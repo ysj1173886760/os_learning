@@ -1,6 +1,5 @@
 #include "uart.h"
 #include "malloc.h"
-#include "util.h"
 
 static char mem_start_brk[MAXHEAP];
 static char *mem_brk;

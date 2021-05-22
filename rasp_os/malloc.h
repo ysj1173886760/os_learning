@@ -1,3 +1,4 @@
+#include "util.h"
 /* single word (4) or double word (8) alignment */
 #define ALIGNMENT 8
 
@@ -21,8 +22,6 @@
 #define NEXT_BLKP(bp) ((char *)(bp) + GET_SIZE(HDRP(bp)))
 #define PREV_BLKP(bp) ((char *)(bp) - GET_SIZE(((char *)(bp) - DSIZE)))
 #define MAXHEAP 102400
-
-typedef unsigned int size_t;
 
 void mem_init(void);               
 void *mem_sbrk(int incr);

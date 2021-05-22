@@ -3,21 +3,22 @@
 #include "util.h"
 #include "lfb.h"
 #include "sprintf.h"
+#include "malloc.h"
+#include "util.h"
 
 extern volatile unsigned char _end;
 extern unsigned int width, height, pitch;
 extern unsigned char *lfb;
 
+char buffer[4096];
+
 void print_at(int x, int y, char *fmt, ...) {
     __builtin_va_list args;
     __builtin_va_start(args, fmt);
-    // we don't have memory allocation yet, so we
-    // simply place our string after our code
-    char *s = (char*)&_end;
     // use sprintf to format our string
-    vsprintf(s,fmt,args);
+    vsprintf(buffer,fmt,args);
     // print out as usual
-    lfb_proprint(x, y, s);
+    lfb_proprint(x, y, buffer);
 }
 
 char get_input() {
@@ -34,13 +35,10 @@ void mvprintw(int y, int x, char *fmt, ...) {
     y += BASEY;
     __builtin_va_list args;
     __builtin_va_start(args, fmt);
-    // we don't have memory allocation yet, so we
-    // simply place our string after our code
-    char *s = (char*)&_end;
     // use sprintf to format our string
-    vsprintf(s,fmt,args);
+    vsprintf(buffer,fmt,args);
     // print out as usual
-    lfb_proprint(x, y, s);
+    lfb_proprint(x, y, buffer);
 }
 
 void clear()
