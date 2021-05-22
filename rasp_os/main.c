@@ -30,6 +30,25 @@
 #include "lfb.h"
 #include "tetris.h"
 #include "bird.h"
+#include "io.h"
+
+void print_games() {
+    mvprintw(2, 20, "Press T to launch tetris");
+    mvprintw(4, 20, "Press B to launch bird");
+}
+
+void main_screen() {
+    clear();
+    mvprintw(0, 20, "Welcome to the ascii-os");
+    print_games();
+    refresh();
+}
+
+// clear the screen
+void init_game() {
+    clear();
+    refresh();
+}
 
 void main()
 {
@@ -39,11 +58,22 @@ void main()
     rand_init();
 
     while(1) {
-        // tetris_run(12, 15);   
-        flappy_bird();
+        main_screen();
         char ch = uart_getc();
-        while (ch != 'r') {
-            ch = uart_getc();
+        switch(ch) {
+            case 't':
+                init_game();
+                tetris_run(12, 15);
+                // press any key to continue
+                ch = uart_getc();
+                break;
+            case 'b':
+                init_game();
+                flappy_bird();
+                ch = uart_getc();
+                break;
+            default:
+                break;
         }
     }
 }
