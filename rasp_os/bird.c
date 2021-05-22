@@ -2,6 +2,8 @@
 #include "delays.h"
 #include "uart.h"
 #include "lfb.h"
+#include "io.h"
+
 #define INT_MAX 2147483647
 
 //-------------------------------- Definitions --------------------------------
@@ -353,11 +355,11 @@ void splash_screen() {
 	// Print the progress bar.
 	mvprintw(PROG_BAR_ROW, NUM_COLS / 2 - PROG_BAR_LEN / 2 - 1, "[");
 	mvprintw(PROG_BAR_ROW, NUM_COLS / 2 + PROG_BAR_LEN / 2, "]");
-	copy_screen();
+	refresh();
 	for(i = 0; i < PROG_BAR_LEN; i++) {
 		wait_msec(1000000 * START_TIME_SEC / (float) PROG_BAR_LEN);
 		mvprintw(PROG_BAR_ROW, NUM_COLS / 2 - PROG_BAR_LEN / 2 + i, "=");
-		copy_screen();
+		refresh();
 	}
 	wait_msec(1000000 * 0.5);
 }
@@ -403,7 +405,7 @@ int flappy_bird()
 			f.t++;
 		}
 
-		clean_screen();
+		clear();
 
 		// Print "moving" floor and ceiling
 		draw_floor_and_ceiling(0, NUM_ROWS - 1, '/', 2, frame % 2);
@@ -423,7 +425,7 @@ int flappy_bird()
 				" Score: %d  Best: %d", score, best_score);
 
 		// Display all the chars for this frame.
-		copy_screen();
+		refresh();
 		frame++;
 	}
 

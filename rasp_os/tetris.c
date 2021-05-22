@@ -4,10 +4,7 @@
 #include "gpio.h"
 #include "lfb.h"
 #include "tetris.h"
-
-#define UART0_DR        ((volatile unsigned int*)(MMIO_BASE+0x00201000))
-#define UART0_FR        ((volatile unsigned int*)(MMIO_BASE+0x00201018))
-
+#include "io.h"
 
 struct tetris_level {
     int score;
@@ -73,7 +70,7 @@ tetris_init(struct tetris *t,int w,int h) {
 
 void
 tetris_print(struct tetris *t) {
-    clean_screen();
+    clear();
     int x,y;
     int posx = BASEX, posy = BASEY;
     print_at(posx, posy, "[LEVEL: %d | SCORE: %d]", t->level, t->score);
@@ -106,7 +103,7 @@ tetris_print(struct tetris *t) {
         print_at(posx, posy, "~");
         posx += CHAR_WIDTH;
     }
-    copy_screen();
+    refresh();
 }
 
 int

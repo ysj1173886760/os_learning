@@ -28,16 +28,7 @@
 #include "delays.h"
 #include "lfb.h"
 #include "sprintf.h"
-
-/* PL011 UART registers */
-#define UART0_DR        ((volatile unsigned int*)(MMIO_BASE+0x00201000))
-#define UART0_FR        ((volatile unsigned int*)(MMIO_BASE+0x00201018))
-#define UART0_IBRD      ((volatile unsigned int*)(MMIO_BASE+0x00201024))
-#define UART0_FBRD      ((volatile unsigned int*)(MMIO_BASE+0x00201028))
-#define UART0_LCRH      ((volatile unsigned int*)(MMIO_BASE+0x0020102C))
-#define UART0_CR        ((volatile unsigned int*)(MMIO_BASE+0x00201030))
-#define UART0_IMSC      ((volatile unsigned int*)(MMIO_BASE+0x00201038))
-#define UART0_ICR       ((volatile unsigned int*)(MMIO_BASE+0x00201044))
+#include "uart.h"
 
 // get address from linker
 extern volatile unsigned char _end;
@@ -130,39 +121,4 @@ void uart_hex(unsigned int d) {
         n+=n>9?0x37:0x30;
         uart_send(n);
     }
-}
-
-void print_at(int x, int y, char *fmt, ...) {
-    __builtin_va_list args;
-    __builtin_va_start(args, fmt);
-    // we don't have memory allocation yet, so we
-    // simply place our string after our code
-    char *s = (char*)&_end;
-    // use sprintf to format our string
-    vsprintf(s,fmt,args);
-    // print out as usual
-    lfb_proprint(x, y, s);
-}
-
-char getInput() {
-    char r = 0;
-    if (!(*UART0_FR&0x10)) {
-        r=(char)(*UART0_DR);
-    }
-    return r;
-}
-
-void mvprintw(int y, int x, char *fmt, ...) {
-    x *= CHAR_WIDTH;
-    y *= CHAR_HEIGHT;
-    y += BASEY;
-    __builtin_va_list args;
-    __builtin_va_start(args, fmt);
-    // we don't have memory allocation yet, so we
-    // simply place our string after our code
-    char *s = (char*)&_end;
-    // use sprintf to format our string
-    vsprintf(s,fmt,args);
-    // print out as usual
-    lfb_proprint(x, y, s);
 }

@@ -23,13 +23,6 @@
  *
  */
 
-#define CHAR_WIDTH 8
-#define CHAR_HEIGHT 16
-#define BASEX 0
-#define BASEY 384
-
 void lfb_init();
 void lfb_print(int x, int y, char *s);
 void lfb_proprint(int x, int y, char *s);
-void clean_screen();
-void copy_screen();

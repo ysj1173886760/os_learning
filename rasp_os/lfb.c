@@ -125,27 +125,6 @@ void lfb_init()
     }
 }
 
-void clean_screen()
-{
-    int y;
-    unsigned char *ptr=lfb + height * pitch;
-
-    for(y = 0; y < height; y++) {
-        memset(ptr, 0, width * 4);
-        ptr += pitch;
-    }
-}
-
-void copy_screen() {
-    unsigned char *ptr=lfb;
-    unsigned char *ptr2 = lfb + height * pitch;
-    for (int y = 0; y < height; y++) {
-        memcpy(ptr, ptr2, width * 4);
-        ptr += pitch;
-        ptr2 += pitch;
-    }
-}
-
 /**
  * Display a string using fixed size PSF
  */
