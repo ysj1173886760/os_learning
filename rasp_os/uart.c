@@ -143,3 +143,11 @@ void print_at(int x, int y, char *fmt, ...) {
     // print out as usual
     lfb_proprint(x, y, s);
 }
+
+char getInput() {
+    char r = 0;
+    if (!(*UART0_FR&0x10)) {
+        r=(char)(*UART0_DR);
+    }
+    return r;
+}

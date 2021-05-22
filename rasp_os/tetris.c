@@ -8,10 +8,6 @@
 #define UART0_DR        ((volatile unsigned int*)(MMIO_BASE+0x00201000))
 #define UART0_FR        ((volatile unsigned int*)(MMIO_BASE+0x00201018))
 
-#define CHAR_WIDTH 8
-#define CHAR_HEIGHT 16
-#define BASEX 140
-#define BASEY 550
 
 struct tetris_level {
     int score;
@@ -220,14 +216,6 @@ tetris_check_lines(struct tetris *t) {
             y++;
         }
     }
-}
-
-char getInput() {
-    char r = 0;
-    if (!(*UART0_FR&0x10)) {
-        r=(char)(*UART0_DR);
-    }
-    return r;
 }
 
 void

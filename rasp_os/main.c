@@ -29,6 +29,7 @@
 #include "rand.h"
 #include "lfb.h"
 #include "tetris.h"
+#include "bird.h"
 
 void main()
 {
@@ -38,8 +39,8 @@ void main()
     rand_init();
 
     while(1) {
-        tetris_run(12, 15);   
-        print_at(110, 30, "Game Over! Press R to Restart");
+        // tetris_run(12, 15);   
+        flappy_bird();
         char ch = uart_getc();
         while (ch != 'r') {
             ch = uart_getc();

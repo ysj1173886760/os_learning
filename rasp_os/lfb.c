@@ -25,6 +25,7 @@
 
 #include "uart.h"
 #include "mbox.h"
+#include "lfb.h"
 #include "util.h"
 
 /* PC Screen Font as used by Linux Console */
@@ -73,14 +74,14 @@ void lfb_init()
     mbox[2] = 0x48003;  //set phy wh
     mbox[3] = 8;
     mbox[4] = 8;
-    mbox[5] = 512;         //FrameBufferInfo.width
-    mbox[6] = 480;          //FrameBufferInfo.height
+    mbox[5] = 640;         //FrameBufferInfo.width
+    mbox[6] = 384;          //FrameBufferInfo.height
 
     mbox[7] = 0x48004;  //set virt wh
     mbox[8] = 8;
     mbox[9] = 8;
-    mbox[10] = 512;        //FrameBufferInfo.virtual_width
-    mbox[11] = 480;         //FrameBufferInfo.virtual_height
+    mbox[10] = 640;        //FrameBufferInfo.virtual_width
+    mbox[11] = 384;         //FrameBufferInfo.virtual_height
 
     mbox[12] = 0x48009; //set virt offset
     mbox[13] = 8;
@@ -244,4 +245,11 @@ void lfb_proprint(int x, int y, char *s)
         // add advances
         x += chr[4]+1; y += chr[5];
     }
+}
+
+void mvprintw(int y, int x, char *s) {
+    x *= CHAR_WIDTH;
+    y *= CHAR_HEIGHT;
+    y += BASEY;
+    lfb_proprint(x, y, s);
 }
