@@ -31,3 +31,12 @@ note that we have redirected the UART to our stdio when we launch the qemu, so y
 currently only support Tetris and Bird
 
 Welcome to contribute
+
+TODO:
+
+simple editor which can write simple code
+
+BF interpreter, to execute the code we just write
+
+[link](https://zhuanlan.zhihu.com/p/149858195)
+
