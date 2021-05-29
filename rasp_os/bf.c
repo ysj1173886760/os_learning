@@ -10,6 +10,9 @@ void bf_simulate(char *program) {
     int printx = 0, printy = 0;
     while (program[size] != '\0')
         size++;
+    uart_puts("simulation begin\n");
+    mvprintw(printy, printx++, "%d", size);
+    refresh();
     for (; pc < size; pc++) {
         switch(program[pc]) {
         case '[':
@@ -59,8 +62,7 @@ void bf_simulate(char *program) {
             }
             break;
         default:
-            uart_puts("program error");
-            return;
+            break;
         }
     }
 }
