@@ -50,7 +50,12 @@ char program[] = {
     +++ .                   print 'o' \
     > ++ .                  print ' ' \
     << +++++ +++++ +++++ .  print 'W' \
-    > ."
+    > .                     print 'o' \
+    +++ .                   print 'r' \
+    ----- - .               print 'l' \
+    ----- --- .             print 'd' \
+    > + .                   print '!' \
+    > .                     print '\n'"
 };
 
 void print_games() {
@@ -99,6 +104,7 @@ void main()
             case 'e':
                 init_game();
                 bf_simulate(program);
+                ch = uart_getc();
             default:
                 break;
         }

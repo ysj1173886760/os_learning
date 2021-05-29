@@ -10,9 +10,6 @@ void bf_simulate(char *program) {
     int printx = 0, printy = 0;
     while (program[size] != '\0')
         size++;
-    uart_puts("simulation begin\n");
-    mvprintw(printy, printx++, "%d", size);
-    refresh();
     for (; pc < size; pc++) {
         switch(program[pc]) {
         case '[':
@@ -28,8 +25,8 @@ void bf_simulate(char *program) {
                 uart_puts("stack over flow");
                 return;
             }
-            pc = memory[ptr] ? stack[pc - 1]: pc;
-            pc -= !memory[ptr];
+            pc = memory[ptr] ? stack[sp - 1]: pc;
+            sp -= !memory[ptr];
             break;
         case '>':
             ptr++;
@@ -56,6 +53,7 @@ void bf_simulate(char *program) {
             break;
         case '.':
             mvprintw(printy, printx++, "%c", memory[ptr]);
+            refresh();
             if (printx == 80) {
                 printx = 0;
                 printy++;
