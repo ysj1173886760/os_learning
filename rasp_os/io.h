@@ -9,3 +9,5 @@ void refresh();
 #define CHAR_HEIGHT 16
 #define BASEX 0
 #define BASEY 384
+#define TERMINAL_WIDTH 80
+#define TERMINAL_HEIGHT 24

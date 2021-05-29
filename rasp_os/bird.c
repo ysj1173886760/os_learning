@@ -46,10 +46,10 @@ const float GRAV = 0.05;
 const float V0 = -0.5;
 
 /** Number of rows in the console window. */
-const int NUM_ROWS = 24;
+const int NUM_ROWS = TERMINAL_HEIGHT;
 
 /** Number of columns in the console window. */
-const int NUM_COLS = 80;
+const int NUM_COLS = TERMINAL_WIDTH;
 
 /** Radius of each vertical pipe. */
 const int PIPE_RADIUS = 3;

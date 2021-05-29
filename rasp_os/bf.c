@@ -2,7 +2,7 @@
 
 char memory[1024];
 int stack[1024];
-char board[24][80];
+char board[TERMINAL_HEIGHT][TERMINAL_WIDTH];
 char program[1921];
 
 int curx = 0, cury = 0;
@@ -73,8 +73,8 @@ void bf_simulate(char *program) {
 void bf_init() {
     curx = 0;
     cury = 0;
-    for (int x = 0; x < 24; x++) {
-        for (int y = 0; y < 80; y++) {
+    for (int x = 0; x < TERMINAL_HEIGHT; x++) {
+        for (int y = 0; y < TERMINAL_WIDTH; y++) {
             board[x][y] = ' ';
         }
     }
@@ -93,7 +93,7 @@ void bf_editor() {
                     cury--;
                 break;
             case 'j':
-                if (curx < 23)
+                if (curx < TERMINAL_HEIGHT - 1)
                     curx++;
                 break;
             case 'k':
@@ -101,7 +101,7 @@ void bf_editor() {
                     curx--;
                 break;
             case 'l':
-                if (cury < 79)
+                if (cury < TERMINAL_WIDTH - 1)
                     cury++;
                 break;
             // here, i try to simulate the arrow button in insert mode
@@ -113,7 +113,7 @@ void bf_editor() {
                 mode = 1;
                 break;
             case 66:
-                if (curx < 23)
+                if (curx < TERMINAL_HEIGHT - 1)
                     curx++;
                 mode = 1;
                 break;
@@ -123,7 +123,7 @@ void bf_editor() {
                 mode = 1;
                 break;
             case 67:
-                if (cury < 79)
+                if (cury < TERMINAL_WIDTH - 1)
                     cury++;
                 mode = 1;
                 break;
@@ -150,7 +150,7 @@ void bf_editor() {
                 }
                 break;
             case 10:
-                if (curx < 23) {
+                if (curx < TERMINAL_HEIGHT - 1) {
                     curx++;
                     cury = 0;
                 }
@@ -161,20 +161,20 @@ void bf_editor() {
             default:
                 board[curx][cury] = ch;
                 cury++;
-                if (cury == 80) {
+                if (cury == TERMINAL_WIDTH) {
                     cury = 0;
                     curx++;
-                    if (curx == 24) {
-                        curx = 23;
-                        cury = 79;
+                    if (curx == TERMINAL_HEIGHT) {
+                        curx = TERMINAL_HEIGHT - 1;
+                        cury = TERMINAL_WIDTH - 1;
                     }
                 }
                 break;
             }
         }
         clear();
-        for (int x = 0; x < 24; x++) {
-            for (int y = 0; y < 80; y++) {
+        for (int x = 0; x < TERMINAL_HEIGHT; x++) {
+            for (int y = 0; y < TERMINAL_WIDTH; y++) {
                 mvprintw(x, y, "%c", board[x][y]);
             }
         }
