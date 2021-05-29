@@ -32,11 +32,47 @@ currently only support Tetris and Bird
 
 Welcome to contribute
 
-TODO:
+#### KEYMAP
 
-simple editor which can write simple code
+actually you can look into the source code yourself
 
-BF interpreter, to execute the code we just write
+but here we provided some necessary stuff here
 
-[link](https://zhuanlan.zhihu.com/p/149858195)
+Tetris: 
+space -> rotate
+a -> left
+d -> right
+s -> down
 
+Flappy Bird:
+space -> jump
+
+BF:
+`#` represent insert mode
+`@` represent console mode
+
+in insert mode, you can use backspace, return, arrow key as normal.
+press to switch back to console mode
+
+in console mode, `hjkl` can move the cursor
+q -> quit
+r -> run program
+i -> switch to insert mode
+
+##### Update
+
+###### 0.0.1
+
+bring BF interpreter and editor to ASCII-os
+
+currently, i just use vim-like style to control the editor
+
+i didn't test other programs but the routine [here](http://fatiherikli.github.io/brainfuck-visualizer/)
+
+at least it can print hello world, i think there maybe some problems about the input, further test is needed
+
+##### TODO
+
+clean code, there are so many magic number here
+mvprintw api is kind of strange, we need to change
+port some easy graphic library to ASCII-os
