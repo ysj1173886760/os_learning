@@ -34,7 +34,7 @@
 #include "malloc.h"
 #include "bf.h"
 
-char program[] = {
+char routine[] = {
     "+++++ +++++             initialize counter (cell #0) to 10 \
     [                       use loop to set 70/100/30/10 \
         > +++++ ++              add  7 to cell #1 \
@@ -103,8 +103,8 @@ void main()
                 break;
             case 'e':
                 init_game();
-                bf_simulate(program);
-                ch = uart_getc();
+                bf_init();
+                bf_editor();
             default:
                 break;
         }

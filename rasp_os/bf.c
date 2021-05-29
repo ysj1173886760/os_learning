@@ -2,6 +2,11 @@
 
 char memory[1024];
 int stack[1024];
+char board[24][80];
+char program[1921];
+
+int curx = 0, cury = 0;
+int mode = 0;
 
 void bf_simulate(char *program) {
     memset(memory, 0, sizeof(memory));
@@ -62,5 +67,120 @@ void bf_simulate(char *program) {
         default:
             break;
         }
+    }
+}
+
+void bf_init() {
+    curx = 0;
+    cury = 0;
+    for (int x = 0; x < 24; x++) {
+        for (int y = 0; y < 80; y++) {
+            board[x][y] = ' ';
+        }
+    }
+}
+
+void bf_editor() {
+    while(1) {
+        char ch = uart_getc();
+        if (mode == 0) {
+            switch(ch) {
+            case 'i':
+                mode = 1;
+                break;
+            case 'h':
+                if (cury != 0)
+                    cury--;
+                break;
+            case 'j':
+                if (curx < 23)
+                    curx++;
+                break;
+            case 'k':
+                if (curx > 0)
+                    curx--;
+                break;
+            case 'l':
+                if (cury < 79)
+                    cury++;
+                break;
+            // here, i try to simulate the arrow button in insert mode
+            // but i found every time i pressed arrow button, it will send 27 to terminal first, then comes it's real keycode
+            // hence, i put it into console mode, after down with cursor moving, i switch back to insert mode
+            case 68:
+                if (cury != 0)
+                    cury--;
+                mode = 1;
+                break;
+            case 66:
+                if (curx < 23)
+                    curx++;
+                mode = 1;
+                break;
+            case 65:
+                if (curx > 0)
+                    curx--;
+                mode = 1;
+                break;
+            case 67:
+                if (cury < 79)
+                    cury++;
+                mode = 1;
+                break;
+            case 'r':
+                clear();
+                refresh();
+                memset(program, 0, sizeof(program));
+                memcpy(program, board, sizeof(board));
+                program[1920] = '\0';
+                bf_simulate(program);
+                uart_getc();
+                break;
+            case 'q':
+                return;
+            default:
+                break;
+            }
+        } else {
+            switch (ch) {
+            case 127:
+                if (cury != 0) {
+                    cury--;
+                    board[curx][cury] = ' ';
+                }
+                break;
+            case 10:
+                if (curx < 23) {
+                    curx++;
+                    cury = 0;
+                }
+                break;
+            case 27:
+                mode = 0;
+                break;
+            default:
+                board[curx][cury] = ch;
+                cury++;
+                if (cury == 80) {
+                    cury = 0;
+                    curx++;
+                    if (curx == 24) {
+                        curx = 23;
+                        cury = 79;
+                    }
+                }
+                break;
+            }
+        }
+        clear();
+        for (int x = 0; x < 24; x++) {
+            for (int y = 0; y < 80; y++) {
+                mvprintw(x, y, "%c", board[x][y]);
+            }
+        }
+        // print cursor
+        // mvprintw(20, 20, "%d", ch);
+        mvprintw(curx, cury, "%c", mode ? '#' : '@');
+        refresh();
     }
 }
