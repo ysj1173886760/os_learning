@@ -22,6 +22,7 @@ typedef struct {
 
 void *thread(void *args) {
     int index = ((parameters *) args)->index;
+    free(args);
     int res = 1;
     int count[9] = {0};
     if (index < 9) {
