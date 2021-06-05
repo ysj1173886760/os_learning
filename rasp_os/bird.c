@@ -357,7 +357,7 @@ void splash_screen() {
 	mvprintw(PROG_BAR_ROW, NUM_COLS / 2 + PROG_BAR_LEN / 2, "]");
 	refresh();
 	for(i = 0; i < PROG_BAR_LEN; i++) {
-		wait_msec(1000000 * START_TIME_SEC / (float) PROG_BAR_LEN);
+		wait_msec(100000 * START_TIME_SEC / (float) PROG_BAR_LEN);
 		mvprintw(PROG_BAR_ROW, NUM_COLS / 2 - PROG_BAR_LEN / 2 + i, "=");
 		refresh();
 	}
